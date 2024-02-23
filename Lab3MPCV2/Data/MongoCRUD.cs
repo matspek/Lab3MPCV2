@@ -12,7 +12,7 @@ namespace Lab3MPCV.Data
 
         public MongoCRUD(string Database)
         {
-            var client = new MongoClient("mongodb://labcv3:28a45IPUtUeHHzKwGqgEHW7TmCzb4lydDocu79Ueyqmvy9h3TqxtTXV64mk9xu1GRPpCfDFSBCXYACDbkniDIA==@labcv3.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@labcv3@");
+            var client = new MongoClient("");
             db = client.GetDatabase(Database);
         }
         public async Task AddWorkExperience(string table, string name, WorkExperience workexperience)
