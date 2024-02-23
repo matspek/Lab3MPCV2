@@ -1,0 +1,106 @@
+﻿@page "/"
+
+@using Lab3MPCV.Data
+@using Lab3MPCV2.Data
+@using Newtonsoft.Json
+@inject IHttpClientFactory factory
+<PageTitle>Mats Pekkari CV</PageTitle>
+
+<style>
+        body {
+            display: grid;
+            place-items: center;
+            height: 100vh;
+        }
+        .div_background {
+            background-image: url(bg.jpg);
+            width: 500px;
+            height: 340px;
+            color:white;
+            font-weight: 500;
+            font-size: 28px;
+            padding: 15px;
+        }
+    </style>
+
+<img src="mats.png" alt="Mats" width="250">
+<h1>
+    @cv.personal_infomation[0].name
+</h1>
+<h3>@cv.personal_infomation[0].role</h3>
+<a href="https://www.linkedin.com/in/mats-pekkari/">
+<img src="linkedin.png" alt="Linkedin">
+</a>
+<a href="https://github.com/matspek">
+    <img src="github.png" alt="Github">
+</a>
+<br />
+<h3>Work experience</h3>
+@foreach(var efran in cv.Erfarenhet){
+<h5>@efran.company</h5>
+    <p>@efran.position</p>
+    <p style="color:red;">@efran.duration</p>
+    <p>@efran.description</p>
+}
+<h3>Education</h3>
+@foreach(var utb in cv.Utbildning){
+<h5> @utb.institution</h5>
+<p>@utb.program</p>
+<p style="color:red;">@utb.duration</p>
+    @foreach(var skill in utb.skills)
+    {
+       <p>@skill</p>
+    }
+}
+<h3>Skills</h3>
+@foreach (var komp in cv.Kompetenser)
+{
+    <p>@komp.technology</p>
+    <p>@komp.description</p>
+    <p>Endorment last 6 monnts:@komp.endorsements_last_6_months</p>
+    <br/>
+    
+}
+<p><em>@joke.value</em></p>
+
+
+@code {
+
+    MongoCRUD db = new MongoCRUD("CVDB");
+    CVModelDto cv;
+    Chuck joke;
+    HttpClient httclient2;
+    HttpClient httpclient;
+
+
+    protected override async Task  OnInitializedAsync()
+    {
+        httclient2 = factory.CreateClient("api");
+        var cvResponse =  httclient2.GetAsync("/cv/Mats%20Pekkari").GetAwaiter().GetResult();
+        if (cvResponse.IsSuccessStatusCode)
+        {
+            var content = await cvResponse.Content.ReadAsStringAsync();
+
+            cv = JsonConvert.DeserializeObject<CVModelDto>(content);
+        }
+        else
+        {
+            // Handle CV data retrieval error here
+        }
+
+        var httclient = factory.CreateClient("chuckApi");
+        var jokeResponse =  httclient.GetAsync("/jokes/random").GetAwaiter().GetResult();
+        if (jokeResponse.IsSuccessStatusCode)
+        {
+            var content2 = await jokeResponse.Content.ReadAsStringAsync();
+
+            joke = JsonConvert.DeserializeObject<Chuck>(content2);
+        }
+        else
+        {
+
+        }
+
+    }
+
+}

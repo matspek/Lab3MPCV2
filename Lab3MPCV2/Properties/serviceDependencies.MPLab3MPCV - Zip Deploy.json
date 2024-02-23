@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "apis1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/Lab3MPCV2api/apis/Lab3MPCV2",
+      "type": "apis.azure"
+    }
+  }
+}

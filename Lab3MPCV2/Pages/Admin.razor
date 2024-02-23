@@ -1,0 +1,61 @@
+﻿@page "/Admin"
+
+@using Lab3MPCV2.Data
+@using Lab3MPCV.Data
+@inject IHttpClientFactory factory
+
+<PageTitle>Admin</PageTitle>
+
+<h3>Admin Skills</h3>
+<AuthorizeView>
+    <Authorized>
+    <form>
+        <div class="mb-3">
+            <label for="exampleInputTechnology" class="form-label">Technology</label>
+            <input @bind="tech" type="technology" class="form-control" id="exampleInputTechnology"/>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputDescription" class="form-label">Description</label>
+            <input @bind="desc" type=" description" class="form-control" id="exampleInputDescription"/>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputEndorsements_last_6_months" class="form-label">Endorsements last 6 months</label>
+            <input @bind="endor" type="endorsements_last_6_months" class="form-control" id="exampleInputEndorsements_last_6_months"/>
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="myFunction">Submit</button>
+    </form>
+    <p>@message</p>
+    </Authorized>
+</AuthorizeView>
+@code {
+    string tech;
+    string desc;
+    string endor;
+    string message= "";
+
+    public void myFunction()
+    {
+        Kompetenser komp = new Kompetenser();
+
+        komp.technology = tech;
+        komp.description = desc;
+        if (int.TryParse(endor, out int i))
+        {
+            komp.endorsements_last_6_months = i;
+        }
+        else
+        {
+            message = "Endorment in not a nummer";
+            return;
+        }
+        
+
+
+        var httclient = factory.CreateClient("api");
+        var json = JsonContent.Create(komp);
+        httclient.PostAsync("/skill/Mats%20Pekkari",json);
+
+
+
+    }
+}
